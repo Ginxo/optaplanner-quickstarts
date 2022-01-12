@@ -27,10 +27,10 @@ jobs:
           echo "action_url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Set failure message
         if: ${{ failure() }}
-        run: echo "zulip_message='The ${{env.project_name}} ${{env.project_branch}} branch has failed. See ${{action_url}}.'" >> $GITHUB_ENV  
+        run: echo "zulip_message='The ${{env.project_name}} ${{env.project_branch}} branch has failed. See ${{env.action_url}}.'" >> $GITHUB_ENV  
       - name: Set success message
         if: ${{ success() }}
-        run: echo "zulip_message='The ${{env.project_name}} ${{env.project_branch}} branch was successfully tested. See ${{action_url}}.'" >> $GITHUB_ENV  
+        run: echo "zulip_message='The ${{env.project_name}} ${{env.project_branch}} branch was successfully tested. See ${{env.action_url}}.'" >> $GITHUB_ENV  
       - name: Send a stream message
         if: ${{ always() }}
         uses: zulip/github-actions-zulip/send-message@v1
