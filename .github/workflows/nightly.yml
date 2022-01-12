@@ -29,14 +29,14 @@ jobs:
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - uses: actions/checkout@v2      
-      - name: Build with Maven
-        run: mvn -B clean install -DskipTests --file pom.xml dependency:tree -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
       - name: Set failure message
         if: ${{ failure() }}
-        run: echo "zulip_message='The content of the message. Maximum message size of ${GITHUB_REF#refs/heads/} bytes'" >> $GITHUB_ENV  
+        run: echo "zulip_message='The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch has failed.'" >> $GITHUB_ENV 
       - name: Set success message
         if: ${{ success() }}
-        run: echo "zulip_message='The content of the message. Maximum message size of ${GITHUB_REF#refs/heads/} bytes'" >> $GITHUB_ENV  
+        run: echo "zulip_message='The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch is OK.'" >> $GITHUB_ENV
+      - name: Print message
+        run: echo "${{env.zulip_message}}"
       - name: Send a stream message
         if: ${{ always() }}
         uses: zulip/github-actions-zulip/send-message@v1
