@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "project_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
           echo "project_name=${{github.repository}}" >> $GITHUB_ENV
-          echo "action_url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          echo "action_url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
       - name: Set failure message
         if: ${{ failure() }}
         run: echo "zulip_message='The ${{env.project_name}} ${{env.project_branch}} branch has failed. See ${{env.action_url}}.'" >> $GITHUB_ENV  
