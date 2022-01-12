@@ -30,7 +30,7 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - uses: actions/checkout@v2      
       - name: Build with Maven
-        run: mvn -B clean install --file pom.xml dependency:tree -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
+        run: mvn -B clean install -DskipTests --file pom.xml dependency:tree -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3
       - name: Set failure message
         if: ${{ failure() }}
         run: echo "zulip_message='The content of the message. Maximum message size of 10000 bytes'" >> $GITHUB_ENV  
