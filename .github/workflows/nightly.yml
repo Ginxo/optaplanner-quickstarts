@@ -17,7 +17,7 @@ jobs:
         java-version: [11]
       fail-fast: true
     runs-on: ${{ matrix.os }}
-    name: Maven Build
+    name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
       - name: Support long paths
         if: ${{ matrix.os == 'windows-latest' }}
@@ -28,23 +28,20 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
-      - uses: actions/checkout@v2      
       - name: Set failure message
         if: ${{ failure() }}
-        run: echo "zulip_message='The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch has failed.'" >> $GITHUB_ENV 
+        run: echo "zulip_message='The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch has failed.'" >> $GITHUB_ENV  
       - name: Set success message
         if: ${{ success() }}
-        run: echo "zulip_message='The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch is OK.'" >> $GITHUB_ENV
-      - name: Print message
-        run: echo "${{env.zulip_message}}"
+        run: echo "zulip_message='The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch was successfully tested.'" >> $GITHUB_ENV  
       - name: Send a stream message
         if: ${{ always() }}
         uses: zulip/github-actions-zulip/send-message@v1
         with:
           api-key: ${{ secrets.ZULIP_API_KEY }}
-          email: 'Email address of the user who owns the API key mentioned above'
-          organization-url: 'Zulip organization canonical URL'
-          to: 'the name or integer ID of the stream'
-          type: 'private for a private message and stream for a stream message'
-          topic: 'Only required for stream messages (type="stream"), ignored otherwise'
+          email: ${{ secrets.ZULIP_EMAIL }}
+          organization-url: 'https://kie.zulipchat.com'
+          to: 'optaplanner-dev'
+          type: 'stream'
+          topic: 'status of ${{github.repository}} - ${GITHUB_REF#refs/heads/}'
           content: ${{ env.zulip_message }}
