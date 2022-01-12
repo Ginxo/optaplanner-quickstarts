@@ -30,10 +30,10 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Set failure message
         if: ${{ failure() }}
-        run: echo "zulip_message='The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch has failed.'" >> $GITHUB_ENV  
+        run: echo "zulip_message='[TEST] The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch has failed.'" >> $GITHUB_ENV  
       - name: Set success message
         if: ${{ success() }}
-        run: echo "zulip_message='The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch was successfully tested.'" >> $GITHUB_ENV  
+        run: echo "zulip_message='[TEST] The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch was successfully tested.'" >> $GITHUB_ENV  
       - name: Send a stream message
         if: ${{ always() }}
         uses: zulip/github-actions-zulip/send-message@v1
