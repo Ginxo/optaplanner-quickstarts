@@ -19,12 +19,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
     steps:
+      - name: Set build information
+        if: ${{ always() }}
+        run: |
+          echo "project_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV  
+          echo "project_name=${{github.repository}}" >> $GITHUB_ENV  
       - name: Set failure message
         if: ${{ failure() }}
-        run: echo "zulip_message='[TEST] The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch has failed.'" >> $GITHUB_ENV  
+        run: echo "zulip_message='The ${{env.project_name}} ${{env.project_branch}} branch has failed.'" >> $GITHUB_ENV  
       - name: Set success message
         if: ${{ success() }}
-        run: echo "zulip_message='[TEST] The ${{github.repository}} ${GITHUB_REF#refs/heads/} branch was successfully tested.'" >> $GITHUB_ENV  
+        run: echo "zulip_message='The ${{env.project_name}} ${{env.project_branch}} branch was successfully tested.'" >> $GITHUB_ENV  
       - name: Send a stream message
         if: ${{ always() }}
         uses: zulip/github-actions-zulip/send-message@v1
@@ -34,5 +39,5 @@ jobs:
           organization-url: 'https://kie.zulipchat.com'
           to: 'optaplanner-dev'
           type: 'stream'
-          topic: "status of ${{github.repository}} - ${{GITHUB_REF#refs/heads/}}"
+          topic: 'status of ${{env.project_name}} - ${{env.project_branch}}'
           content: ${{ env.zulip_message }}
